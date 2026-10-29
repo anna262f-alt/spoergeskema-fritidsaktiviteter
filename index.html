@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <meta name="theme-color" content="#4285f4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Forslag">
+
+  <title>Special Minds infoskærm</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    .side {
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .kort {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+    }
+
+    .topbillede {
+      width: 100%;
+      height: auto;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 15px;
+      display: block;
+      margin-bottom: 22px;
+    }
+
+    .ikon {
+      width: 55px;
+      height: 55px;
+      margin: 0 auto 10px auto;
+      display: block;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      text-align: center;
+      font-size: 30px;
+      color: #333;
+    }
+
+    .beskrivelse {
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 28px;
+      color: #555;
+      font-size: 17px;
+    }
+
+    .beskrivelse p {
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .forklaring {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #666;
+      margin-top: -2px;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      font-family: Arial, Helvetica, sans-serif;
+      outline: none;
+      background: white;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: #4285f4;
+    }
+
+    input[type="text"]:disabled {
+      background: #eeeeee;
+      color: #888;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .anonym-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 15px;
+      padding: 15px;
+      background: #f7f9fb;
+      border: 1px solid #e1e5e9;
+      border-radius: 12px;
+    }
+
+    .anonym-box input {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .anonym-box label {
+      margin: 0;
+      font-weight: normal;
+      cursor: pointer;
+    }
+
+    .valg-overskrift {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 30px;
+      margin-bottom: 8px;
+    }
+
+    .valg-forklaring {
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .valg-liste {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .valg {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      background: #f7f9fb;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .valg:hover {
+      border-color: #4285f4;
+    }
+
+    .valg input {
+      width: 25px;
+      height: 25px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .valg span {
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .andet-felt {
+      display: none;
+      margin-top: 15px;
+      padding: 18px;
+      background: #f7f9fb;
+      border-radius: 12px;
+      border: 1px solid #e1e5e9;
+    }
+
+    .andet-felt.vis {
+      display: block;
+    }
+
+    .andet-felt label {
+      margin-top: 0;
+    }
+
+    #sendKnap {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 25px;
+      background: #4285f4;
+      color: white;
+    }
+
+    #sendKnap:hover {
+      background: #3367d6;
+    }
+
+    #sendKnap:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    #besked {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: bold;
+      display: none;
+      line-height: 1.5;
+    }
+
+    #besked.success {
+      display: block;
+      background: #e6f4ea;
+      color: #137333;
+    }
+
+    #besked.error {
+      display: block;
+      background: #fce8e6;
+      color: #c5221f;
+    }
+
+    @media (max-width: 600px) {
+      .side {
+        padding: 10px;
+      }
+
+      .kort {
+        padding: 18px;
+        border-radius: 15px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+
+      .beskrivelse {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="side">
+    <div class="kort">
+
+      <img
+        src="images/top.jpg"
+        alt="Special Minds"
+        class="topbillede"
+      >
+
+      <img
+        src="icons/icon-192.png"
+        alt=""
+        class="ikon"
+      >
+
+      <h1>Special Minds infoskærm</h1>
+
+      <div class="beskrivelse">
+        <p>
+          Vi vil gerne lave en touchskærm med information om,
+          hvad der sker i huset.
+        </p>
+
+        <p>
+          Hvis der er noget, du synes ville være fedt at kunne se på skærmen,
+          så skriv det herunder. Det kunne fx. være frokostmenuen eller sociale aktiviteter.
+        </p>
+      </div>
+
+
+      <form
+        id="formular"
+        method="POST"
+        action="https://script.google.com/macros/s/AKfycby9SV2I_rq9dmZFLhIWc8ptbDTluWWORrT_h2IDlm6N1OAkXKierngWGuLXNWyayEva/exec"
+        target="googleSheetFrame"
+      >
+
+        <!-- NAVN -->
+        <label for="navn">
+          Dit navn
+        </label>
+
+        <div class="forklaring">
+          Dit navn bruges kun til at kunne se, hvem der har sendt
+          et svar, hvis vi har spørgsmål til dit forslag. Du kan vælge at svare anonymt.
+        </div>
+
+        <input
+          type="text"
+          id="navn"
+          name="navn"
+          placeholder="Skriv dit navn"
+          autocomplete="name"
+        >
+
+
+        <!-- ANONYM -->
+        <div class="anonym-box">
+          <input
+            type="checkbox"
+            id="anonym"
+            name="anonym"
+            value="ja"
+          >
+
+          <label for="anonym">
+            Jeg vil gerne være anonym
+          </label>
+        </div>
+
+
+        <!-- ØNSKER -->
+        <div class="valg-overskrift">
+          Hvad vil du gerne kunne se på infoskærmen?
+        </div>
+
+        <div class="valg-forklaring">
+          Du må gerne vælge flere ting.
+        </div>
+
+
+        <div class="valg-liste">
+
+          <label class="valg">
+            <input
+              type="checkbox"
+              name="ønske"
+              value="Frokostmenu"
+            >
+            <span>Frokostmenu</span>
+          </label>
+
+          <label class="valg">
+            <input
+              type="checkbox"
+              name="ønske"
+              value="Sociale aktiviteter"
+            >
+            <span>Sociale aktiviteter</span>
+          </label>
+
+          <label class="valg">
+            <input
+              type="checkbox"
+              name="ønske"
+              value="Fysiske aktiviteter"
+            >
+            <span>Fysiske aktiviteter</span>
+          </label>
+
+          <label class="valg">
+            <input
+              type="checkbox"
+              name="ønske"
+              value="Fællesundervisning"
+            >
+            <span>Fællesundervisning</span>
+          </label>
+
+          <label class="valg">
+            <input
+              type="checkbox"
+              name="ønske"
+              value="Friday Minds"
+            >
+            <span>Friday Minds</span>
+          </label>
+
+          <label class="valg">
+            <input
+              type="checkbox"
+              name="ønske"
+              value="Ændringer i dagens program"
+            >
+            <span>Ændringer i dagens program</span>
+          </label>
+
+          <label class="valg">
+            <input
+              type="checkbox"
+              name="ønske"
+              value="Praktiske beskeder"
+            >
+            <span>Praktiske beskeder</span>
+          </label>
+
+          <label class="valg">
+            <input
+              type="checkbox"
+              name="ønske"
+              value="Hvem er på arbejde i dag?"
+            >
+            <span>Hvem er på arbejde i dag?</span>
+          </label>
+
+          <label class="valg">
+            <input
+              type="checkbox"
+              name="ønske"
+              value="Vejret"
+            >
+            <span>Vejret</span>
+          </label>
+
+          <label class="valg">
+            <input
+              type="checkbox"
+              id="andetCheckbox"
+              name="ønske"
+              value="Andet"
+            >
+            <span>Andet</span>
+          </label>
+
+        </div>
+
+
+        <!-- ANDET -->
+        <div
+          id="andetFelt"
+          class="andet-felt"
+        >
+          <label for="andet">
+            Hvad kunne du ellers tænke dig?
+          </label>
+
+          <textarea
+            id="andet"
+            name="andet"
+            placeholder="Skriv dit forslag her..."
+          ></textarea>
+        </div>
+
+
+        <!-- SEND -->
+        <button
+          type="submit"
+          id="sendKnap"
+        >
+          Send mit svar
+        </button>
+
+      </form>
+
+
+      <!-- BESKED -->
+      <div id="besked"></div>
+
+    </div>
+  </div>
+
+
+  <!-- Skjult iframe til Google Apps Script -->
+  <iframe
+    name="googleSheetFrame"
+    id="googleSheetFrame"
+    style="display:none;"
+  ></iframe>
+
+
+  <script src="app.js?v=6"></script>
+
+</body>
+</html>
